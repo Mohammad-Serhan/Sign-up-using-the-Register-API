@@ -62,6 +62,8 @@ class AdminController {
         accessToken,
         user: adminExist,
       });
+
+      
     } catch (err) {
       return res.status(400).send({
         authenticated: false,
@@ -124,17 +126,27 @@ class AdminController {
         });
       }
 
-      db.getRefreshTokenByToken(refreshToken, (error, tokenDetails) => {
-            if (error) {
+      db.getRefreshTokenByToken(refreshToken, async (error, tokenDetails) => {
+            try {
+                if (error) {
+                    return res.status(401).send({
+                        authenticated: false,
+                        message: "Something happened",
+                    });
+                }
+                if (!tokenDetails) {
+                    return res.status(400).send({
+                        authenticated: false,
+                        message: "Invalid refresh Token",
+                    });
+                }
+                if (tokenDetails) {
+                    await db.deleteRefreshToken(tokenDetails.id);
+                }
+            } catch (error) {
                 return res.status(401).send({
                     authenticated: false,
-                    message: "Something happened",
-                });
-            }
-            if (!tokenDetails) {
-                return res.status(400).send({
-                    authenticated: false,
-                    message: "Invalid refresh Token",
+                    error: error.message,
                 });
             }
            
@@ -159,11 +171,37 @@ class AdminController {
                 message: "admin does not exist!",
                 });
             }
+
+
+            
+
             const accessToken = jwt.sign(
               { id: tokenDetails.id },
               process.env.ACCESS_TOKEN_SECRET,
               { expiresIn: "15m" }
             );
+
+            const refreshToken = jwt.sign(
+              { id: tokenDetails.id },
+              process.env.REFRESH_TOKEN_SECRET,
+              {
+                expiresIn: "30d",
+              }
+            );
+
+            res.cookie("refreshToken", refreshToken, {
+              // expires: new Date(Date.now() + 2.5 * 3600000),
+              path: "/",
+              secure: true,
+              httpOnly: true,
+              sameSite: "none",
+            });
+
+            await db.insertRefreshToken({
+                userId: tokenDetails.id,
+                token: refreshToken,
+            });
+
             return res.status(200).json({
               authenticated: true,
               accessToken,

@@ -106,7 +106,6 @@ db.getAllCustomers = () => {
 
 
 db.getAverageRegistrations = (nbOfTime, timeUnit) => {
-  //   console.log(selectQuery);
   return new Promise((resolve, reject) => {
     con.query(
       `SELECT id, name, email FROM customers where created_at > now() - interval ${nbOfTime} ${timeUnit}`,

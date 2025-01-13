@@ -511,7 +511,7 @@ function Home() {
           <div className="max-w-5xl mx-auto px-5 py-24 ">
             <div className="flex flex-wrap w-full mb-20 flex-col items-center text-center">
               <h1 className="sm:text-5xl text-3xl font-bold title-font mb-2 text-gray-900">
-                BASMA code Challenge
+                 code Challenge
               </h1>
               <div className="mt-4 mb-2 h-0.5 w-16 bg-primary mx-auto"></div>
               <p className="w-9/12 w-full text-sm font-medium leading-relaxed text-gray-500">

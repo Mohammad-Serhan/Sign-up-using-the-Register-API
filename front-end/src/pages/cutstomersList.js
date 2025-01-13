@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import Auth from "../auth";
-import authServices from "../services/auth.services";
+// import authServices from "../services/auth.services";
 import Customers from "./Customers";
 import Pagination from "./Pagination";
 
@@ -64,28 +64,28 @@ const CustomerList = () => {
 
 
 
-   const verifyAdmin = async () => {
-     try {
-       let authResponse = await authServices.verifyToken(token);
-      //  console.log(authResponse)
-       if (authResponse.authenticated) {
-         Auth.storeAuthData(authResponse, token);
-         fetchData();
-       } else {
-       Auth.removeAuthData();
-       navigate("/admin/login");
-       }
-     } catch {
-       Auth.removeAuthData();
-       navigate("/admin/login")
-     }
-   };
+  //  const verifyAdmin = async () => {
+  //    try {
+  //      let authResponse = await authServices.verifyToken(token);
+  //     //  console.log(authResponse)
+  //      if (authResponse.authenticated) {
+  //        Auth.storeAuthData(authResponse, token);
+  //        fetchData();
+  //      } else {
+  //      Auth.removeAuthData();
+  //      navigate("/admin/login");
+  //      }
+  //    } catch {
+  //      Auth.removeAuthData();
+  //      navigate("/admin/login")
+  //    }
+  //  };
 
 
   useEffect(() => {
   // console.log(token);
-    verifyAdmin();
-    // fetchData();
+    // verifyAdmin();
+    fetchData();
   }, [token]);
 
 
@@ -156,6 +156,7 @@ const CustomerList = () => {
     // console.log(response.data.length);
     setDisplayAverage(response.data.length);
     setAverageSelect(keyword);
+    setCurrentCustomers(response.data);
   };
 
 
